@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Dispositivos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #result {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .hidden {
+            display: none;
+        }
+        .not-found {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Buscar Dispositivos</h1>
+    <p>Ingresa el ID del dispositivo (por ejemplo, DA1, SALA-A23):</p>
+    <input type="text" id="searchInput" placeholder="ID del dispositivo">
+    <button onclick="buscarDispositivo()">Buscar</button>
+
+    <div id="result">
+        <h2>Detalles del dispositivo:</h2>
+        <p><strong>ID:</strong> <span id="id"></span></p>
+        <p><strong>Marca:</strong> <span id="marca"></span></p>
+        <p><strong>Modelo:</strong> <span id="modelo"></span></p>
+        <p><strong>Tipo:</strong> <span id="tipo"></span></p>
+        <p><strong>Departamento:</strong> <span id="departamento"></span></p>
+        <p><strong>Responsable:</strong> <span id="responsable"></span></p>
+        <p><strong>Especificaciones:</strong> <span id="especificaciones"></span></p>
+    </div>
+
+    <p id="notFound" class="hidden not-found">Dispositivo no encontrado.</p>
+
+   
+
+    <script>
+        // Lista de dispositivos
+        const dispositivos = [
+            {
+                id: "DA1",
+                marca: "HP",
+                modelo: "Desktop-6CBNG6C",
+                tipo: "Computadora de escritorio HP Desktop",
+                departamento: "Departamento de desarrollo académico",
+                responsable: "Bremmen Adair Sanchez Alcazar",
+                especificaciones: "Intel core i5 2401, 4GB RAM, Windows 10 PRO, HP 52032 LCD de 20 pulgadas, Teclado HACER KU-0761, Mouse Logitech M101"
+            },
+            {
+                id: "DA2",
+                marca: "Lenovo",
+                modelo: "Desktop-TUQOORL",
+                tipo: "Computadora de escritorio Lenovo Desktop",
+                departamento: "Departamento de desarrollo académico",
+                responsable: "Bremmen Adair Sanchez Alcazar",
+                especificaciones: "AMD RYZEN 3 3250 U (Gráficos Radeon), 4GB RAM, Windows 11 Home, Lenovo IdeaCentre (21.5\"), Lenovo R41166421"
+            },
+            {
+                id: "DA3",
+                marca: "EPSON",
+                modelo: "L3251",
+                tipo: "Impresora multifuncional",
+                departamento: "Departamento de desarrollo académico",
+                responsable: "Bremmen Adair Sanchez Alcazar",
+                especificaciones: "Impresora multifuncional con tanque de tinta."
+            },
+            {
+                id: "SE1",
+                marca: "ACER",
+                modelo: "X193W",
+                tipo: "Computadora de escritorio",
+                departamento: "Departamento de servicios escolares",
+                responsable: "Geovanni Elias Casas Dominguez",
+                especificaciones: "Intel(R) Core(TM) 2 Duo E8400, 4GB RAM, Windows 7 Professional, Resolución de pantalla: 1366 × 768 píxeles."
+            },     
+            
+            {
+                id: "SE2",
+                marca: "ACER",
+                modelo: "X193W",
+                tipo: "Computadora de escritorio",
+                departamento: "Departamento de servicios escolares",
+                responsable: "Geovanni Elias Casas Dominguez",
+                especificaciones: "Intel(R) Core(TM) 2 Duo E8400, 4GB RAM, Windows 7 Professional, Resolución de pantalla: 1367 × 768 píxeles."
+            },
+
+            {
+                id: "SE3",
+                marca: "EPSON",
+                modelo: "L3210",
+                tipo: "Impresora multifuncional",
+                departamento: "Departamento de servicios escolares",
+                responsable: "Geovanni Elias Casas Dominguez",
+                especificaciones: "Impresora multifuncional con tanque de tinta."
+            },
+            
+            {
+                id: "SALA-A1",
+    marca: "HP",
+    modelo: "COMPAQ 8300 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 4GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+            },
+
+            {
+                id: "SALA-A2",
+    marca: "HP",
+    modelo: "COMPAQ 8300 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 4GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+            },
+
+            {
+                id: "SALA-A3",
+    marca: "HP",
+    modelo: "COMPAQ 8300 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 4GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+            },
+
+            {
+                id: "SALA-A4",
+    marca: "HP",
+    modelo: "COMPAQ 8300 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 4GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+            },
+
+            {
+                id: "SALA-A5",
+    marca: "HP",
+    modelo: "COMPAQ 8300 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 4GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+            },
+
+            {
+                id: "SALA-A6",
+    marca: "HP",
+    modelo: "COMPAQ 8300 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+            },
+
+            {
+                id: "SALA-A7",
+    marca: "HP",
+    modelo: "COMPAQ 8300 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 2GB RAM, Windows 10 PRO, Pantalla de 19 pulgadas."
+            },
+            
+            {
+                id: "SALA-A8",
+    marca: "HP",
+    modelo: "COMPAQ 8300 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 4GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+            },
+
+            {
+                id: "SALA-A9",
+    marca: "HP",
+    modelo: "COMPAQ 8300 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 4GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+            },
+
+            {
+                id: "SALA-A10",
+    marca: "HP",
+    modelo: "COMPAQ 8300 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 4GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+            },
+
+            {
+                id: "SALA-A11",
+    marca: "HP",
+    modelo: "COMPAQ 8300 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 4GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+            },
+
+            {
+                id: "SALA-A12",
+    marca: "ACER",
+    modelo: "VERITON M661",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core 2 Quad Q6600, 8GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+            },
+
+            {
+                id: "SALA-A13",
+    marca: "HP",
+    modelo: "COMPAQ 8200 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+            },
+
+            {
+    id: "SALA-A14",
+    marca: "HP",
+    modelo: "508 BMT",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core 2 Duo, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+          },
+          {
+    id: "SALA-A15",
+    marca: "HP",
+    modelo: "COMPAQ 8200 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 3GB RAM, Windows 10 PRO, Pantalla de 18.5 pulgadas."
+},
+{
+    id: "SALA-A16",
+    marca: "HP",
+    modelo: "COMPAQ 8200 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A17",
+    marca: "HP",
+    modelo: "508 BMT",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core 2 Duo, 8GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A18",
+    marca: "HP",
+    modelo: "COMPAQ 8200 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A19",
+    marca: "HP",
+    modelo: "COMPAQ 8200 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A20",
+    marca: "HP",
+    modelo: "COMPAQ 8200 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+
+{
+    id: "SALA-A21",
+    marca: "ACER",
+    modelo: "VERITON M4",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "8GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A22",
+    marca: "HP",
+    modelo: "COMPAQ 8200 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A23",
+    marca: "HP",
+    modelo: "COMPAQ 8200 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A24",
+    marca: "HP",
+    modelo: "COMPAQ 8200 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A25",
+    marca: "HP",
+    modelo: "COMPAQ 8200 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A26",
+    marca: "HP",
+    modelo: "COMPAQ 8200 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A27",
+    marca: "HP",
+    modelo: "COMPAQ 8200 ELITE",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-3470, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A28",
+    marca: "HP",
+    modelo: "COMPAQ 8200",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-2400S, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A29",
+    marca: "HP",
+    modelo: "COMPAQ 8200",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-2400S, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A30",
+    marca: "HP",
+    modelo: "COMPAQ 8200",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-2400S, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A31",
+    marca: "HP",
+    modelo: "COMPAQ 8200",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-2400S, 2GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A32",
+    marca: "HP",
+    modelo: "COMPAQ 8200",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-2400S, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A33",
+    marca: "HP",
+    modelo: "COMPAQ 8200",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-2400S, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A34",
+    marca: "HP",
+    modelo: "COMPAQ 8200",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "Intel Core i5-2400S, 3GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A35",
+    marca: "ACER",
+    modelo: "VERITON M4",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "8GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+},
+{
+    id: "SALA-A36",
+    marca: "ACER",
+    modelo: "VERITON M4",
+    tipo: "Computadora de escritorio",
+    departamento: "Departamento de centro de cómputo sala A",
+    responsable: "Esau Santiago Martínez",
+    especificaciones: "8GB RAM, Windows 10 PRO, Pantalla de 20 pulgadas."
+}
+
+
+
+            
+            
+
+            
+
+            
+            // Agrega los demás dispositivos aquí
+        ];
+
+        
+
+
+        // Función para buscar un dispositivo por ID
+        function buscarDispositivo() {
+            const input = document.getElementById("searchInput").value.trim().toUpperCase();
+            const resultDiv = document.getElementById("result");
+            const notFound = document.getElementById("notFound");
+            
+            // Buscar en la lista de dispositivos
+            const dispositivo = dispositivos.find(d => d.id === input);
+
+            if (dispositivo) {
+                // Mostrar detalles del dispositivo
+                document.getElementById("id").textContent = dispositivo.id;
+                document.getElementById("marca").textContent = dispositivo.marca || "N/A";
+                document.getElementById("modelo").textContent = dispositivo.modelo || "N/A";
+                document.getElementById("tipo").textContent = dispositivo.tipo;
+                document.getElementById("departamento").textContent = dispositivo.departamento;
+                document.getElementById("responsable").textContent = dispositivo.responsable;
+                document.getElementById("especificaciones").textContent = dispositivo.especificaciones;
+
+                resultDiv.style.display = "block";
+                notFound.classList.add("hidden");
+            } else {
+                // Mostrar mensaje de no encontrado
+                resultDiv.style.display = "none";
+                notFound.classList.remove("hidden");
+            }
+        }
+
+       
+
+    </script>
+</body>
+</html>
